@@ -108,6 +108,9 @@ const getDoc = () => {
     option.data = props.src;
   } else if (props.src.endsWith(".pdf")) {
     option.url = props.src;
+  } else if (props.src.split('?')[0].endsWith(".pdf")) {
+    option.url = props.src;
+  }
   } else {
     const binaryData = atob(
       props.src.includes(",") ? props.src.split(",")[1] : props.src
