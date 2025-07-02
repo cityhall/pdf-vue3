@@ -108,13 +108,10 @@ const getDoc = () => {
     option.data = props.src;
   } else if (props.src.endsWith(".pdf")) {
     option.url = props.src;
-  } else if (props.src.split('?')[0].endsWith(".pdf")) {
+  } else if (props.src.split("?")[0].endsWith(".pdf")) {
     option.url = props.src;
-  }
   } else {
-    const binaryData = atob(
-      props.src.includes(",") ? props.src.split(",")[1] : props.src
-    );
+    const binaryData = atob(props.src.includes(",") ? props.src.split(",")[1] : props.src);
     const byteArray = new Uint8Array(binaryData.length);
     for (let i = 0; i < binaryData.length; i++) {
       byteArray[i] = binaryData.charCodeAt(i);
@@ -179,15 +176,12 @@ const renderPDF = async () => {
       // ----
       const canvas = canvasRefs.value[i].value[0];
       var viewport = page.getViewport({ scale: 1 });
-      var scale =
-        ((canvas.parentNode as HTMLDivElement).clientWidth - 4) /
-        viewport.width;
+      var scale = ((canvas.parentNode as HTMLDivElement).clientWidth - 4) / viewport.width;
       const context = canvas.getContext("2d");
       const scaledViewport = page.getViewport({ scale: scale * dpr.value });
       canvas.width = scaledViewport.width;
       canvas.height = scaledViewport.height;
-      itemHeightList.value[i] = calcH +=
-        scaledViewport.height / dpr.value + rowGap.value;
+      itemHeightList.value[i] = calcH += scaledViewport.height / dpr.value + rowGap.value;
       await page.render({
         canvasContext: context as CanvasRenderingContext2D,
         viewport: scaledViewport,
@@ -195,11 +189,7 @@ const renderPDF = async () => {
     } catch (error) {
       console.error("Error rendering PDF:", error);
     }
-    if (
-      props.page &&
-      (i === props.page - 1 ||
-        (props.page > totalPages.value && i === totalPages.value - 1))
-    ) {
+    if (props.page && (i === props.page - 1 || (props.page > totalPages.value && i === totalPages.value - 1))) {
       scroller.value.scrollTo(0, (itemHeightList.value[i - 1] ?? 0) + 2);
     }
     if (i === totalPages.value - 1) {
@@ -220,10 +210,7 @@ const handleScroll = (event: any) => {
   }, 1000);
   scrollOffset.value = event.target.scrollTop;
   emit("onScroll", event.target.scrollTop);
-  if (
-    scroller.value.scrollTop + scroller.value.offsetHeight >=
-    scroller.value.scrollHeight - 10
-  ) {
+  if (scroller.value.scrollTop + scroller.value.offsetHeight >= scroller.value.scrollHeight - 10) {
     currentPage.value = itemHeightList.value.length;
     return;
   }
@@ -240,10 +227,7 @@ const handleScroll = (event: any) => {
 let timer: number;
 const renderPDFWithDebounce = () => {
   viewportHeight.value = window.innerHeight;
-  if (
-    Math.abs(innerWidth.value - window.innerWidth) > 1 &&
-    Math.abs(containerWidth.value - container.value.offsetWidth) > 1
-  ) {
+  if (Math.abs(innerWidth.value - window.innerWidth) > 1 && Math.abs(containerWidth.value - container.value.offsetWidth) > 1) {
     setWidth();
   } else {
     setWidth();
@@ -267,18 +251,12 @@ onBeforeMount(async () => {
   const pdfjs = (await import("pdfjs-dist/legacy/build/pdf.min.js")).default;
   GlobalWorkerOptions = pdfjs.GlobalWorkerOptions;
   getDocument = pdfjs.getDocument;
-  const workerSrc = new URL(
-    "../node_modules/pdfjs-dist/legacy/build/pdf.worker.min.js",
-    import.meta.url
-  ).href;
+  const workerSrc = new URL("../node_modules/pdfjs-dist/legacy/build/pdf.worker.min.js", import.meta.url).href;
   GlobalWorkerOptions.workerSrc = workerSrc;
   dpr.value = window.devicePixelRatio || 1;
   viewportHeight.value = window.innerHeight;
   setWidth();
-  if (
-    (typeof props.src === "string" && props.src.length > 0) ||
-    props.src instanceof Uint8Array
-  ) {
+  if ((typeof props.src === "string" && props.src.length > 0) || props.src instanceof Uint8Array) {
     getDoc();
     renderPDF();
     window.addEventListener("resize", renderPDFWithDebounce);
@@ -287,10 +265,7 @@ onBeforeMount(async () => {
   watch(
     () => props.src,
     (src: string | Uint8Array) => {
-      if (
-        (typeof src === "string" && src.length > 0) ||
-        src instanceof Uint8Array
-      ) {
+      if ((typeof src === "string" && src.length > 0) || src instanceof Uint8Array) {
         getDoc();
         renderPDF();
         if (!isAddEvent.value) {
@@ -316,8 +291,7 @@ onUnmounted(() => {
   clearTimeout(timer);
   clearTimeout(scrollTimer);
   cancelAnimationFrame(animFrameId);
-  isAddEvent.value &&
-    window.removeEventListener("resize", renderPDFWithDebounce);
+  isAddEvent.value && window.removeEventListener("resize", renderPDFWithDebounce);
 });
 // --- back to top ---
 let animFrameId: number;
@@ -379,36 +353,19 @@ watch(
 </script>
 
 <template>
-  <div
-    class="pdf-vue3-main"
-    style="height: 100%; position: relative; min-height: 10px"
-  >
+  <div class="pdf-vue3-main" style="height: 100%; position: relative; min-height: 10px">
     <div class="pdf-vue3-container" style="height: 100%">
-      <div
-        ref="scroller"
-        class="pdf-vue3-scroller"
-        style="height: 100%; overflow-y: auto"
-        :style="{ maxHeight: `${viewportHeight}px` }"
-        @scroll="handleScroll"
-      >
+      <div ref="scroller" class="pdf-vue3-scroller" style="height: 100%; overflow-y: auto" :style="{ maxHeight: `${viewportHeight}px` }" @scroll="handleScroll">
         <div
           class="pdf-vue3-canvas-container"
           ref="container"
           style="margin: 0 auto"
           :style="{
-            width: isNaN(Number(props.pdfWidth))
-              ? props.pdfWidth
-              : `${props.pdfWidth}px`,
+            width: isNaN(Number(props.pdfWidth)) ? props.pdfWidth : `${props.pdfWidth}px`,
           }"
         >
           <canvas
-            style="
-              display: block;
-              box-shadow: #a9a9a9 0px 1px 3px 0px;
-              margin-left: auto;
-              margin-right: auto;
-              width: calc(100% - 4px);
-            "
+            style="display: block; box-shadow: #a9a9a9 0px 1px 3px 0px; margin-left: auto; margin-right: auto; width: calc(100% - 4px)"
             :style="{
               marginBottom: `${rowGap}px`,
             }"
@@ -419,18 +376,7 @@ watch(
         </div>
       </div>
     </div>
-    <div
-      class="pdf-vue3-progress"
-      v-if="props.showProgress"
-      style="
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        user-select: none;
-        pointer-events: none;
-      "
-    >
+    <div class="pdf-vue3-progress" v-if="props.showProgress" style="position: absolute; left: 0; top: 0; width: 100%; user-select: none; pointer-events: none">
       <slot v-if="slots.progress" name="progress" :loadRatio="loadRatio"></slot>
       <div
         v-else
@@ -445,32 +391,12 @@ watch(
     <div
       class="pdf-vue3-pageTooltip"
       v-if="props.showPageTooltip"
-      style="
-        position: absolute;
-        left: 12px;
-        top: 12px;
-        width: calc(100% - 12px);
-        user-select: none;
-        pointer-events: none;
-      "
+      style="position: absolute; left: 12px; top: 12px; width: calc(100% - 12px); user-select: none; pointer-events: none"
     >
-      <slot
-        v-if="slots.pageTooltip"
-        name="pageTooltip"
-        :currentPage="currentPage"
-        :totalPages="totalPages"
-      ></slot>
+      <slot v-if="slots.pageTooltip" name="pageTooltip" :currentPage="currentPage" :totalPages="totalPages"></slot>
       <div
         v-else
-        style="
-          padding: 4px 8px;
-          background: rgba(0, 0, 0, 0.5);
-          color: #ffffff;
-          font-size: 16px;
-          border-radius: 6px;
-          display: inline-block;
-          transition: opacity 0.3s;
-        "
+        style="padding: 4px 8px; background: rgba(0, 0, 0, 0.5); color: #ffffff; font-size: 16px; border-radius: 6px; display: inline-block; transition: opacity 0.3s"
         :style="{ opacity: isScrolling && totalPages > 0 ? '1' : '0' }"
       >
         {{ currentPage }}/{{ totalPages }}
@@ -480,27 +406,10 @@ watch(
       class="pdf-vue3-backToTopBtn"
       v-if="props.showBackToTopBtn"
       @click="backToTop"
-      style="
-        position: absolute;
-        right: 16px;
-        bottom: 16px;
-        display: inline-block;
-        user-select: none;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.3s;
-      "
-      :style="
-        scrollOffset > props.scrollThreshold
-          ? { opacity: '1', pointerEvents: 'initial' }
-          : undefined
-      "
+      style="position: absolute; right: 16px; bottom: 16px; display: inline-block; user-select: none; pointer-events: none; opacity: 0; transition: opacity 0.3s"
+      :style="scrollOffset > props.scrollThreshold ? { opacity: '1', pointerEvents: 'initial' } : undefined"
     >
-      <slot
-        v-if="slots.backToTopBtn"
-        name="backToTopBtn"
-        :scrollOffset="scrollOffset"
-      ></slot>
+      <slot v-if="slots.backToTopBtn" name="backToTopBtn" :scrollOffset="scrollOffset"></slot>
       <div
         v-else
         style="
@@ -515,13 +424,7 @@ watch(
           align-items: center;
         "
       >
-        <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             fill-rule="evenodd"
             clip-rule="evenodd"
