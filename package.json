@@ -1,5 +1,5 @@
 {
-  "name": "pdf-vue3-f",
+  "name": "pdf-vue3",
   "version": "1.0.12",
   "description": "vue3 pdf viewer",
   "main": "./dist/pdf-vue3.js",

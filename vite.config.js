@@ -1,18 +1,16 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
-  plugins: [
-    vue(),
-  ],
+  plugins: [vue()],
   build: {
     lib: {
-      entry: 'src/index.ts',
-      name: 'pdf-vue3-f',
-      formats: ['es'],
+      entry: "src/index.ts",
+      name: "pdf-vue3",
+      formats: ["es"],
     },
     rollupOptions: {
-      external: ['vue'],
-    }
-  }
-})
+      external: ["vue"],
+    },
+  },
+});
